@@ -11,7 +11,7 @@ function PetsList() {
     const fetchPets = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:8080/pets');
+        const response = await axios.get('/api/pets');
         console.log('Pets recebidos: ', response.data);
         
         setPets(response.data);
