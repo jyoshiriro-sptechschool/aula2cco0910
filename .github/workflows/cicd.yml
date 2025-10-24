@@ -23,6 +23,7 @@ jobs:
       # 3. Build da aplicação (Se for uma aplicação que precisa ser construída, ex: React, Angular, Vue)
       - name: FE - Instalar Dependências e Fazer Build
         run: |
+             echo "IP_PORTA_API=http://${{ secrets.REMOTE_HOST_PRIVADO }}:8080" > .env
              npm install
              npm run build --if-present 
              # Se sua app não precisar de build, remova esta etapa
