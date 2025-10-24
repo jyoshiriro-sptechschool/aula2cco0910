@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: env.IP_PORTA_API || 'http://localhost:8080',
+          target: env.IP_PORTA_API || 'http://10.0.0.177:8080',
           changeOrigin: true,
           secure: false,
           rewrite: (path) => path.replace(/^\/api/, '')
