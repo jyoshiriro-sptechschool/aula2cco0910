@@ -23,4 +23,5 @@ VALUES
 
 
 INSERT INTO pet (nome_pet, nome_dono, especie_codigo, raca_codigo, email_dono, peso, altura, nascimento, validade_chip, cpf_dono, telefone_dono, ativo) VALUES
-('WWWWWWWWWWWW', 'QQQQQQQQQ', 'CAO', 'VIRA_LATA', 'joao.silva@example.com', 15.5, 0.5, '2020-01-15', '2030-01-15', '12345678901', '(11) 98765-4321', true);
+('WWWWWWWWWWWW', 'QQQQQQQQQ', 'CAO', 'VIRA_LATA', 'joao.silva@example.com', 15.5, 0.5, '2020-01-15', '2030-01-15', '12345678901', '(11) 98765-4321', true),
+  ('BBBBBB', 'wefwefwf', 'GATO', 'SIAMES', 'maria.rosa@mail.com', 15.5, 0.5, '2020-01-15', '2030-01-15', '12345678901', '(11) 98765-4321', true);
