@@ -42,7 +42,30 @@ jobs:
           # SOURCE: O que será copiado. Pode ser o diretório de build (ex: ./dist)
           SOURCE: "./frontend/dist/" 
 
-   # 5. Configuração do ambiente Java/Maven
+      # 5. Atualiando o IP privado da API e reininciado o docker do Ngnix
+      - name: FE - Executar Comando Shell na EC2
+        uses: appleboy/ssh-action@v1.0.3 # Action popular para SSH
+        with:
+          host: ${{ secrets.REMOTE_HOST }} 
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}  
+
+          # O Comando ou Script a ser Executado no EC2
+          # Use o pipe '|' para comandos de múltiplas linhas
+          script: |
+            set -e
+
+            export IP_PORTA_API=${{ secrets.REMOTE_HOST_PRIVADO }}:8080
+            echo "Variável de IP e porta da API criada"
+            
+            envsubst '${IP_PORTA_API}' < /home/${{ secrets.REMOTE_USER }}/frontend/nginx/templates/default.conf.template > /home/${{ secrets.REMOTE_USER }}/frontend/nginx/conf.d/default.conf
+            echo "Arquivo default.conf do ngnix criado"
+            
+            docker compose -f /home/${{ secrets.REMOTE_USER }}/compose.yaml up -d --build
+            echo "Docker compose do Ngnix reiniciado"
+            
+
+   # 6. Configuração do ambiente Java/Maven
       - name: BE - Configurar JDK
         uses: actions/setup-java@v4
         with:
@@ -50,17 +73,17 @@ jobs:
           java-version: '21'
           cache: 'maven' # Configura cache do Maven para acelerar builds futuros
 
-      # 6. Execução dos testes automatizados do projeto
+      # 7. Execução dos testes automatizados do projeto
       - name: BE - Executar Testes automatizados
         run: mvn clean test # comentei os tests por enquanto     
         working-directory: ./backend
 
-      # 7. Geração do .jar
+      # 8. Geração do .jar
       - name: BE - Gerar Artefato .JAR
         run: mvn package -DskipTests=true # -DskipTests=true pq os testes foram executados no passo anterior
         working-directory: ./backend
 
-      # 7. Dando o mesmo nome sempre ao .jar
+      # 9. Dando o mesmo nome sempre ao .jar
       - name: BE - Renomear JAR para app_loko.jar # ou o nome que preferir parta o jar
         run: |
           # Encontra o primeiro (e único) arquivo .jar gerado na pasta 'target'
@@ -75,7 +98,7 @@ jobs:
           echo "Renomeado para: target/app_loko.jar"
         working-directory: ./backend
 
-      # 7. Deploy (Transferência de arquivos e execução de comandos remotos)
+      # 10. Deploy (Transferência de arquivos e execução de comandos remotos)
       - name: BE - Copiar arquivos e Deploy (Usando SSH com rsync)
         uses: easingthemes/ssh-deploy@main
         with:
@@ -89,7 +112,7 @@ jobs:
           SOURCE: "./backend/target/*.jar" 
           
 
-      # 8. Fazendo o envio do jar da ec2 pública para a privada
+      # 11. Fazendo o envio do jar da ec2 pública para a privada
       - name: BE - Executar Comando Shell na EC2
         uses: appleboy/ssh-action@v1.0.3 # Action popular para SSH
         with:
